@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -18,8 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest(classes = FootApi.class)
 @AutoConfigureMockMvc
@@ -84,8 +84,29 @@ class PlayerIntegrationTest {
                 .getResponse();
         List<Player> actual = convertFromHttpResponse(response);
 
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+
         assertEquals(1, actual.size());
         assertEquals(toCreate, actual.get(0).toBuilder().id(null).build());
+    }
+
+    @Test
+    void update_players_ok() throws Exception {
+        Player toUpdate = Player.builder()
+                .id(1)
+                .name("Jane")
+                .isGuardian(true)
+                .build();
+        MockHttpServletResponse response = mockMvc
+                .perform(put("/players/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(toUpdate)))
+                .andReturn()
+                .getResponse();
+        List<Player> actual = convertFromHttpResponse(response);
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(1, actual.size());
     }
 
     private List<Player> convertFromHttpResponse(MockHttpServletResponse response)
@@ -96,4 +117,7 @@ class PlayerIntegrationTest {
                 response.getContentAsString(),
                 playerListType);
     }
+
+
+
 }
