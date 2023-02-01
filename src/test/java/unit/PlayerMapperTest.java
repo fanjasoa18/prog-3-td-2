@@ -1,5 +1,6 @@
 package unit;
 
+import app.foot.exception.NotFoundException;
 import app.foot.model.Player;
 import app.foot.model.PlayerScorer;
 import app.foot.repository.MatchRepository;
@@ -8,6 +9,7 @@ import app.foot.repository.TeamRepository;
 import app.foot.repository.entity.MatchEntity;
 import app.foot.repository.entity.PlayerEntity;
 import app.foot.repository.entity.PlayerScoreEntity;
+import app.foot.repository.entity.TeamEntity;
 import app.foot.repository.mapper.PlayerMapper;
 import org.junit.jupiter.api.Test;
 
@@ -99,5 +101,35 @@ public class PlayerMapperTest {
                 .ownGoal(false)
                 .match(matchEntity1)
                 .build(), actual);
+    }
+
+    @Test
+    void player_to_entity_ok() {
+        Player domain = playerModelRakoto(entityRakoto());
+        TeamEntity team = teamBarea();
+        when(teamRepositoryMock.findByName(domain.getTeamName()))
+                .thenReturn(team);
+
+        PlayerEntity expected = PlayerEntity.builder()
+                .id(domain.getId())
+                .name(domain.getName())
+                .guardian(domain.getIsGuardian())
+                .team(team)
+                .build();
+
+        PlayerEntity actual = subject.toEntity(domain);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void player_to_entity_ko() {
+        Player domain = playerModelRakoto(entityRakoto());
+        TeamEntity team = teamMaroc();
+        when(teamRepositoryMock.findByName(domain.getTeamName()))
+                .thenReturn(team);
+
+        assertThrowsExceptionMessage("404 NOT FOUND: TeamName is not found",
+                NotFoundException.class, () ->subject.toEntity(player(team)));
     }
 }
