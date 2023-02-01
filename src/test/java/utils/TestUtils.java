@@ -74,6 +74,15 @@ public class TestUtils {
                 .build();
     }
 
+    public static app.foot.model.Player player(TeamEntity team) {
+        return app.foot.model.Player.builder()
+                .id(1)
+                .name("Pascal")
+                .isGuardian(false)
+                .teamName(teamMaroc().getName())
+                .build();
+    }
+
     public static PlayerEntity playerEntityRakoto(TeamEntity teamEntityBarea) {
         return PlayerEntity.builder()
                 .id(1)
@@ -94,6 +103,13 @@ public class TestUtils {
         return TeamEntity.builder()
                 .id(1)
                 .name("Barea")
+                .build();
+    }
+
+    public static TeamEntity teamMaroc() {
+        return TeamEntity.builder()
+                .id(12)
+                .name("Maroc")
                 .build();
     }
 
