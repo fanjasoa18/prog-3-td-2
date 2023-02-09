@@ -13,4 +13,5 @@ public class BaseController {
     public void handleException() {
         log.info("A bad request exception was handled");
     }
+
 }
