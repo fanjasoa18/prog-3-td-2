@@ -1,5 +1,6 @@
 package app.foot.repository.mapper;
 
+import app.foot.controller.response.UpdatePlayerResponse;
 import app.foot.model.Player;
 import app.foot.model.PlayerScorer;
 import app.foot.repository.MatchRepository;
@@ -52,4 +53,5 @@ public class PlayerMapper {
                 .guardian(domain.getIsGuardian())
                 .build();
     }
+
 }
